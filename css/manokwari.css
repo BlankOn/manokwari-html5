@@ -90,11 +90,12 @@ body {
   top: 0px;
   left: 0px;
   z-index: 10;
-  width: 300px;
+  width: 280px;
   height: 100%;
   background-color: #020;
   -webkit-transition: -webkit-transform 200ms;
   -webkit-box-shadow: 0px 2px 12px #000;
+  padding: 10px;
 }
 
 .menu-invisible {
@@ -135,5 +136,31 @@ body {
 }
 
 #clock-date {
+  font-size: 0.9em;
+}
+
+.avatar-holder {
+  width: 100%;
+  display:-webkit-box;
+  -webkit-box-orient:horizontal;
+  -webkit-box-pack:start;
+  -webkit-box-align:center;
+}
+
+#avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #eee;
+  margin-right: 5px;
+}
+
+#username {
+  color: #fff;
+  display: block;
+}
+
+#hostname {
+  color: #ccc;
+  display: block;
   font-size: 0.9em;
 }
