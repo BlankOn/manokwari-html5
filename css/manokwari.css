@@ -164,3 +164,18 @@ body {
   display: block;
   font-size: 0.9em;
 }
+
+.menu-entries {
+  color: #fff;
+  padding: 0px;
+}
+
+.menu-entries li {
+  list-style: none;
+  margin: 0px;
+  border-bottom: 1px solid #222;;
+}
+
+.clickable {
+  cursor: pointer;
+}
