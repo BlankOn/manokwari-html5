@@ -168,6 +168,56 @@ Dimmer.prototype.tryHide = function() {
   }
 }
 
+// LockScreen object
+// It is the big object covering everything  
+LockScreen = function() {
+  this.element = $("#lock-screen-area");
+}
+
+LockScreen.prototype = new BaseObject();
+
+// Hides the lock screen 
+LockScreen.prototype.hide = function() {
+  var self = this;
+  // Hiding means applying the lock-screen-out and eventually removing the lock-screen-fade from the menu element
+  self.element.off("webkitTransitionEnd");
+  // Do the removal after the animation ends
+  self.element.on("webkitTransitionEnd", function(event) {
+    self.element.removeClass("lock-screen-fade");
+    // Hide the element
+    self.element.css("display", "none");
+    // Detach the event handler
+    self.element.off("webkitTransitionEnd");
+  });
+  // Start the animation
+  self.element.addClass("lock-screen-out");
+}
+// Shows the menu
+LockScreen.prototype.show = function() {
+  var self = this;
+  // show the element first
+  self.element.css("display", "inherit");
+  //  Showing means removing the lock-screen-out and  adding lock-screen-fade class from the element
+  setTimeout(function() {
+    self.element.removeClass("lock-screen-out");
+    self.element.addClass("lock-screen-fade");
+  }, 0); // invoke with setTimeout to get the element shown first
+}
+// Checks whether the lock-screen is currently open or not
+LockScreen.prototype.isOpen = function() {
+  // The lock-screen is open when it does not have the lock-screen-out class
+  return !this.element.hasClass("lock-screen-out");
+}
+// Tries to hide the menu if it is open
+LockScreen.prototype.tryHide = function() {
+  if (this.isOpen()) {
+    // Only close the menu when it is open
+    this.hide();
+  }
+}
+
+
+
 // AppletsArea object
 // This is the clock object on the right bottom of the screen
 AppletsArea = function() {
@@ -255,6 +305,7 @@ var launcherMenu,
     desktopMenu,
     dimmer,
     appletsArea,
+    lockScreen,
     clock;
 
 // Setup events
@@ -296,6 +347,14 @@ var setupEvents = function() {
   desktopArea.click(function() {
     appletsArea.tryHide();
   });
+
+  $("#lock-screen").click(function() {
+    lockScreen.show();
+  });
+
+  $("#unlock-screen").click(function() {
+    lockScreen.tryHide();
+  });
 }
 
 $(document).ready(function() {
@@ -307,6 +366,7 @@ $(document).ready(function() {
   trayArea = new TrayArea();
   desktopMenuButton = new DesktopMenuButton();
   dimmer = new Dimmer();
+  lockScreen = new LockScreen();
   appletsArea = new AppletsArea();
   clock = new Clock();
 
