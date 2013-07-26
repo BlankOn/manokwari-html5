@@ -73,16 +73,15 @@ body {
   width: 100%;
   height: 100%;
   z-index: 8;
-  -webkit-transition: opacity 1200ms;
-  background-color: #000;
+  -webkit-transition: background-color 1200ms;
 }
 
 .dimmer-fade {
-  opacity: 0.6;
+  background-color: rgba(0,0,0,0.7);
 }
 
 .dimmer-out {
-  opacity: 0.0;
+  background-color: rgba(0,0,0,0);
 }
 
 #menu {
