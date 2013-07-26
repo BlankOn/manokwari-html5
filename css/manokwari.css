@@ -114,6 +114,7 @@ body {
   width: 300px;
   height: 100%;
   background-color: #020;
+  color: white;
   -webkit-box-shadow: 0px 2px 12px #000;
   -webkit-transition: -webkit-transform 200ms;
   -webkit-box-shadow: 0px 2px 12px #000;
@@ -178,4 +179,18 @@ body {
 
 .clickable {
   cursor: pointer;
+}
+
+#panel-applets {
+  min-height: 50px;
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  top: 0px;
+  background: #eee;
+  -webkit-transition: -webkit-transform 200ms;
+}
+
+.panel-applets-invisible {
+  -webkit-transform: translate3d(0, -50px, 0);
 }

@@ -168,6 +168,63 @@ Dimmer.prototype.tryHide = function() {
   }
 }
 
+// AppletsArea object
+// This is the clock object on the right bottom of the screen
+AppletsArea = function() {
+  this.element = $("#panel-applets");
+
+  // Get the reference of panel-applets-invisible style from the css
+  // Because we want to modify the transition3d according to the height of the area
+  for (var i = 0; i < document.styleSheets.length; i++) {
+    // Get the sheet 
+    var sheet = document.styleSheets[i];
+    if (sheet.rules) {
+      // If there are rules in the sheet, find the .panel-applets-invisible rules
+      for (var j = 0; j < sheet.rules.length; j ++) {
+        if (sheet.rules[j].selectorText == ".panel-applets-invisible") {
+          // Keep the reference in the this.rules
+          this.rules = sheet.rules[j];
+        }
+      }
+    }
+  }
+}
+
+AppletsArea.prototype = new BaseObject();
+AppletsArea.prototype.updateHeight = function() {
+  // Adjust top coordinate according to the height of the panel
+  var panelHeight = $("#panel").height();
+  this.element.css("top", panelHeight + "px");
+
+  // Adjust element's translate3d according to the element's height
+  var myHeight = this.element.height();
+  // Modify the style pointed by this.rules we got in the constructor above
+  this.rules.style.webkitTransform = "translate3d(0, -" + myHeight + "px, 0)";
+}
+
+// Removing the -invisible class will show the element
+AppletsArea.prototype.show = function() {
+  this.updateHeight();
+  this.element.removeClass("panel-applets-invisible");
+}
+// Adding the -invisible class will hide the element
+AppletsArea.prototype.hide = function() {
+  this.updateHeight();
+  this.element.addClass("panel-applets-invisible");
+}
+// Checks whether the area is currently open or not
+AppletsArea.prototype.isOpen = function() {
+  // The area is open when it does not have the -invisible class
+  return !this.element.hasClass("panel-applets-invisible");
+}
+// Tries to hide the area if it is open
+AppletsArea.prototype.tryHide = function() {
+  if (this.isOpen()) {
+    // Only close the area when it is open
+    this.hide();
+  }
+}
+
 // Clock object
 // This is the clock object on the right bottom of the screen
 Clock = function() {
@@ -197,6 +254,7 @@ var launcherMenu,
     trayArea,
     desktopMenu,
     dimmer,
+    appletsArea,
     clock;
 
 // Setup events
@@ -207,11 +265,13 @@ var setupEvents = function() {
     dimmer.show();
     // try to hide the desktop menu
     desktopMenu.tryHide()
+    appletsArea.tryHide();
   });
 
   dimmer.click(function() {
     launcherMenu.tryHide()
     desktopMenu.tryHide()
+    appletsArea.tryHide();
     dimmer.tryHide();
   });
 
@@ -220,7 +280,21 @@ var setupEvents = function() {
     desktopMenu.showMenu();
     // try to hide the launcher menu
     launcherMenu.tryHide()
+    appletsArea.tryHide();
     dimmer.show();
+  });
+
+  trayArea.click(function() {
+    // Hide if it is open, otherwise just open
+    if (appletsArea.isOpen()) {
+      appletsArea.tryHide();
+    } else {
+      appletsArea.show();
+    }
+  });
+
+  desktopArea.click(function() {
+    appletsArea.tryHide();
   });
 }
 
@@ -233,6 +307,7 @@ $(document).ready(function() {
   trayArea = new TrayArea();
   desktopMenuButton = new DesktopMenuButton();
   dimmer = new Dimmer();
+  appletsArea = new AppletsArea();
   clock = new Clock();
 
   setupEvents();
