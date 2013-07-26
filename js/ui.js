@@ -216,8 +216,6 @@ LockScreen.prototype.tryHide = function() {
   }
 }
 
-
-
 // AppletsArea object
 // This is the clock object on the right bottom of the screen
 AppletsArea = function() {
@@ -275,6 +273,61 @@ AppletsArea.prototype.tryHide = function() {
   }
 }
 
+// NotificationArea object
+// This is the clock object on the right bottom of the screen
+NotificationArea = function() {
+  this.element = $("#notification-area");
+
+  // Get the reference of notification-area-invisible style from the css
+  // Because we want to modify the transition3d according to the height of the area
+  for (var i = 0; i < document.styleSheets.length; i++) {
+    // Get the sheet 
+    var sheet = document.styleSheets[i];
+    if (sheet.rules) {
+      // If there are rules in the sheet, find the .notification-area-invisible rules
+      for (var j = 0; j < sheet.rules.length; j ++) {
+        if (sheet.rules[j].selectorText == ".notification-area-invisible") {
+          // Keep the reference in the this.rules
+          this.rules = sheet.rules[j];
+        }
+      }
+    }
+  }
+}
+
+NotificationArea.prototype = new BaseObject();
+NotificationArea.prototype.updateHeight = function() {
+  // Adjust element's translate3d according to the element's height
+  var myHeight = this.element.height();
+  // Modify the style pointed by this.rules we got in the constructor above
+  this.rules.style.webkitTransform = "translate3d(0, " + myHeight + "px, 0)";
+}
+
+// Removing the -invisible class will show the element
+NotificationArea.prototype.show = function() {
+  this.updateHeight();
+  this.element.removeClass("notification-area-invisible");
+}
+// Adding the -invisible class will hide the element
+NotificationArea.prototype.hide = function() {
+  this.updateHeight();
+  this.element.addClass("notification-area-invisible");
+}
+// Checks whether the area is currently open or not
+NotificationArea.prototype.isOpen = function() {
+  // The area is open when it does not have the -invisible class
+  return !this.element.hasClass("notification-area-invisible");
+}
+
+// Tries to hide the area if it is open
+NotificationArea.prototype.tryHide = function() {
+  if (this.isOpen()) {
+    // Only close the area when it is open
+    this.hide();
+  }
+}
+
+
 // Clock object
 // This is the clock object on the right bottom of the screen
 Clock = function() {
@@ -306,6 +359,7 @@ var launcherMenu,
     dimmer,
     appletsArea,
     lockScreen,
+    notificationArea,
     clock;
 
 // Setup events
@@ -355,6 +409,22 @@ var setupEvents = function() {
   $("#unlock-screen").click(function() {
     lockScreen.tryHide();
   });
+
+  $("#dismiss-notification-area").click(function() {
+    notificationArea.tryHide();
+  });
+
+
+  // Test notifcation area
+  setTimeout(function() {
+    notificationArea.show();
+  }, 5000)
+  // Add timeout here as well
+  $("#dismiss-notification-area").click(function() {
+    setTimeout(function() {
+      notificationArea.show();
+    }, 5000)
+  });
 }
 
 $(document).ready(function() {
@@ -368,6 +438,7 @@ $(document).ready(function() {
   dimmer = new Dimmer();
   lockScreen = new LockScreen();
   appletsArea = new AppletsArea();
+  notificationArea = new NotificationArea();
   clock = new Clock();
 
   setupEvents();

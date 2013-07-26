@@ -213,4 +213,17 @@ body {
   opacity: 0;
 }
 
+#notification-area {
+  min-height: 50px;
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  -webkit-transition: -webkit-transform 200ms;
+}
 
+.notification-area-invisible {
+  -webkit-transform: translate3d(0, 50px, 0);
+}
